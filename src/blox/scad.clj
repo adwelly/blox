@@ -1,4 +1,4 @@
-(ns blox.core
+(ns blox.scad
   (:require [clojure.string :as s]))
 
 (defn name-of [key]
@@ -7,15 +7,15 @@
     (name key)))
 
 (defn val-of [val]
-  (if (or (list? val) (vector? val))
-    (str "[" (s/join "," val) "]")
-    (str val)))
+  (cond (or (list? val) (vector? val)) (str "[" (s/join "," (map val-of val)) "]")
+        (float? val) (format "%.2f" val)
+        :else (str val)))
 
-(defn func-to-str [{:keys [vec] :as p}]
-  (let [params (for [[k v] (dissoc (:params p) :trans)] (str (name-of k) "=" (val-of v)))
-        param-str (s/join "," params)
+(defn func-to-str [{:keys [name params vec] :as p}]
+  (let [pms (for [[k v] (dissoc params :trans)] (str (name-of k) "=" (val-of v)))
+        param-str (s/join "," pms)
         vc (when vec (val-of vec))]
-    (str (if (get-in p [:params :trans]) (str "#" (:name p)) (:name p)) "(" (if vc vc "") param-str ")")))
+    (str (if (:trans params) (str "#" name) name) "(" (if vc vc "") param-str ")")))
 
 (defn add-param [{:keys [params] :as shape} k v]
   (assoc shape :params (assoc params k v)))
@@ -90,7 +90,8 @@
         :else (println "Unknown shape " shape)))
 
 (defn write [file shape]
-  (spit file (code-gen shape)))
+  (let [file-name (if (s/ends-with? file ".scad") file (str file ".scad"))]
+    (spit file-name (code-gen shape))))
 
 ;; Examples
 

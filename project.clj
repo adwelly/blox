@@ -3,5 +3,5 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :repl-options {:init-ns blox.core}
+  :repl-options {:init-ns blox.scad}
   :dependencies [[org.clojure/clojure "1.8.0"]])

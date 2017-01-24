@@ -1,6 +1,6 @@
 (ns blox.core-test
   (:require [clojure.test :refer :all]
-            [blox.core :refer :all]))
+            [blox.scad :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
