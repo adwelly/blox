@@ -1,0 +1,9 @@
+color([0,0,1]){
+union(){
+cylinder(h=55,center=true,$fa=0.5,$fs=0.5,r=10);
+#sphere(r=20,center=true);
+translate([5,5,5]){
+#cube(size=[20,30,40],center=true);
+}
+}
+}

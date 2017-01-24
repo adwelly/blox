@@ -15,7 +15,7 @@
   (let [params (for [[k v] (dissoc (:params p) :trans)] (str (name-of k) "=" (val-of v)))
         param-str (s/join "," params)
         vc (when vec (val-of vec))]
-  (str (if (get-in p [:params :trans]) (str "#" (:name p)) (:name p)) "(" (if vc vc "") param-str ")")))
+    (str (if (get-in p [:params :trans]) (str "#" (:name p)) (:name p)) "(" (if vc vc "") param-str ")")))
 
 (defn add-param [{:keys [params] :as shape} k v]
   (assoc shape :params (assoc params k v)))
@@ -91,4 +91,58 @@
 
 (defn write [file shape]
   (spit file (code-gen shape)))
+
+;; Examples
+
+;; A coloured arbitrary object
+(defn ex0 [] (write "out/t0.scad" {:operator :color
+                                   :vec      [0, 0, 1]
+                                   :content  [{:operator :union
+                                               :content  [{:primitive :cylinder :r 10 :h 55}
+                                                          {:primitive :sphere :trans true}
+                                                          {:operator :translate
+                                                           :vec      [5, 5, 5]
+                                                           :content  [{:primitive :cube :size [20 30 40] :trans true}]}]}]}))
+
+;; A sphere with a hole (punched out with a translucent cylinder
+(defn ex1 [] (write "out/t1.scad"
+                    {:operator :difference :content [{:primitive :sphere}
+                                                     {:primitive :cylinder :r 10 :h 50 :trans true}]}))
+
+;; 3d cross
+(defn ex2 [] (write "out/t2.scad"
+                    {:operator :union :content [{:operator :rotate :vec [90, 0, 0] :content [{:primitive :cylinder :r 10 :h 50}]}
+                                                {:operator :rotate :vec [0, 90, 0] :content [{:primitive :cylinder :r 10 :h 50}]}
+                                                {:operator :rotate :vec [0, 0, 90] :content [{:primitive :cylinder :r 10 :h 50}]}]}))
+
+  ; Smooth polyhedron with a circular profile in x, y, z
+  (defn ex3 [] (write "out/t3.scad"
+                      {:operator :intersection
+                       :content  [{:operator :rotate
+                                   :vec      [90, 0, 0] :content [{:primitive :cylinder
+                                                                   :r         10
+                                                                   :h         50}]}
+                                  {:operator :rotate
+                                   :vec      [0, 90, 0]
+                                   :content  [{:primitive :cylinder :r 10 :h 50}]}
+                                  {:operator :rotate
+                                   :vec      [0, 0, 90]
+                                   :content  [{:primitive :cylinder :r 10 :h 50}]}]}))
+
+  ;; Weird spaceship/submarine shape
+  (defn ex4 [] (write "out/t4.scad"
+                      {:operator :hull
+                       :content  [{:operator :scale
+                                   :vec      [3, 1, 1]
+                                   :content  [{:operator :rotate
+                                               :vec      [90, 0, 0]
+                                               :content  [{:primitive :cylinder
+                                                           :r         10
+                                                           :h         50}]}
+                                              {:operator :rotate
+                                               :vec      [0, 90, 0]
+                                               :content  [{:primitive :cylinder :r 10 :h 50}]}
+                                              {:operator :rotate
+                                               :vec      [0, 0, 90]
+                                               :content  [{:primitive :cylinder :r 10 :h 50}]}]}]}))
 
