@@ -95,7 +95,7 @@
   (let [file-name (if (s/ends-with? file ".scad") file (str file ".scad"))]
     (spit file-name (code-gen shape))))
 
-;; Examples
+;; Primitive Examples
 
 ;; A coloured arbitrary object
 (defn ex0 [] (write "out/t0.scad" {:operator :color
@@ -148,4 +148,15 @@
                                               {:operator :rotate
                                                :vec      [0, 0, 90]
                                                :content  [{:primitive :cylinder :r 10 :h 50}]}]}]}))
+
+;; Convenience functions
+
+(defn cube [x y z]
+  {:primitive :cube
+   :size [x y z]})
+
+(defn translate [v & shapes]
+  {:operator :translate
+   :vec v
+   :content (vec shapes)})
 

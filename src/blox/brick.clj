@@ -1,5 +1,5 @@
 (ns blox.brick
-  (:require [blox.scad :refer [write]]))
+  (:require [blox.scad :refer [write cube difference translate]]))
 
 (def iota 0.2)
 (def brick-dim 7.8)
@@ -21,7 +21,7 @@
   {:operator :color
    :vec      [1 0 0]
    :content  [{:operator :union
-               :content  [{:primitive :cube :size [l w h]}
+               :content  [(cube l w h)
                           {:operator :translate
                            :vec      [0 0 half-stud-height]
                            :content  [{:primitive :cylinder :h (+ h stud-h) :r stud-r}]}]}]})
@@ -32,14 +32,11 @@
 (defn solid [h m n]
   (let [row (for [i (range m)] {:operator :translate :vec [(* i brick-dim) 0 0] :content [(stud1 h)]})
         cols (for [j (range n)] {:operator :translate :vec [0 (* j brick-dim) 0] :content row})]
-    {:operator :translate
-     :vec      [(+ half-brick-dim (* -1 half-brick-dim m)) (+ half-brick-dim (* -1 half-brick-dim n)) 0]
-     :content  [{:operator :union :content cols}]}))
+    (translate [(+ half-brick-dim (* -1 half-brick-dim m)) (+ half-brick-dim (* -1 half-brick-dim n)) 0] {:operator :union :content cols})))
 
 
 (defn buttress [studs]
-  {:primitive :cube
-   :size      [buttress-width (- (* studs brick-dim) iota) buttress-height]})
+  (cube buttress-width (- (* studs brick-dim) iota) buttress-height))
 
 (defn tube []
   {:operator :difference
@@ -66,10 +63,7 @@
    :content  [(interior m n)
               {:operator :difference
                :content  [(solid brick-height m n)
-                          {:operator :translate
-                           :vec      [0 0 (* -1 wall-depth)]
-                           :content  [{:primitive :cube
-                                       :size      [(- (* m brick-dim) wall-depth) (- (* n brick-dim) wall-depth) brick-height]}]}]}]})
+                          (translate [0 0 (* -1 wall-depth)] (cube (- (* m brick-dim) wall-depth) (- (* n brick-dim) wall-depth) brick-height))]}]})
 
 (defn make []
   (write "out/stud1" (brick 3 4)))
