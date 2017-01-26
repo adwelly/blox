@@ -20,11 +20,8 @@
 (defn studded-cube [l w h stud-h stud-r]
   {:operator :color
    :vec      [1 0 0]
-   :content  [{:operator :union
-               :content  [(cube l w h)
-                          {:operator :translate
-                           :vec      [0 0 half-stud-height]
-                           :content  [{:primitive :cylinder :h (+ h stud-h) :r stud-r}]}]}]})
+   :content  [(union (cube l w h)
+                     (translate [0 0 half-stud-height] {:primitive :cylinder :h (+ h stud-h) :r stud-r}))]})
 
 (defn stud1 [h]
   (studded-cube brick-dim brick-dim h stud-height stud-radius))
@@ -39,19 +36,15 @@
   (cube buttress-width (- (* studs brick-dim) iota) buttress-height))
 
 (defn tube []
-  {:operator :difference
-   :content  [{:primitive :cylinder :h tube-height :r tube-radius}
-              {:operator :translate
-               :vector   [0 0 iota]
-               :content  [{:primitive :cylinder :h (+ tube-height iota) :r (- tube-radius buttress-width)}]}]})
+  (difference {:primitive :cylinder :h tube-height :r tube-radius}
+              {:primitive :cylinder :h (+ tube-height iota) :r (- tube-radius buttress-width)}))
 
 (defn interior [m n]
   (let [half-total-width (* m half-brick-dim)
         half-total-length (* n half-brick-dim)
         buttresses (for [i (range (dec m))] (translate [(- (* (inc i) brick-dim) half-total-width) 0 (- half-brick-height half-buttress-height iota)] (buttress n)))
         tubes (for [i (range (dec m)) j (range (dec n))] (translate[(- (* (inc i) brick-dim) half-total-width) (- (* (inc j) brick-dim) half-total-length) 0] (tube)))]
-    {:operator :union
-     :content  (concat buttresses tubes)}))
+    (apply union (concat buttresses tubes))))
 
 (defn plate [m n]
   (solid tile-height m n))
@@ -63,4 +56,3 @@
 
 (defn make []
   (write "out/stud1" (brick 3 4)))
-
