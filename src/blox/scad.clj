@@ -82,6 +82,8 @@
 
 (defmethod operator-gen :union [_] (func "union" {} {}))
 
+;;(defmethod operator-gen :module [_] {:keys [params]} (func "module" {:params params})
+
 (defn code-gen [shape]
   (cond (contains? shape :primitive) (-> shape primitive-gen func-to-str (str ";\n"))
         (contains? shape :operator) (let [sub-shapes (map code-gen (:content shape))
