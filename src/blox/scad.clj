@@ -155,8 +155,16 @@
   {:primitive :cube
    :size [x y z]})
 
+(defn difference [a b & shapes]
+  {:operator :difference
+   :content (concat [a b] shapes)})
+
 (defn translate [v & shapes]
   {:operator :translate
    :vec v
    :content (vec shapes)})
+
+(defn union [a b & shapes]
+  {:operator :union
+   :content (concat [a b] shapes)})
 
