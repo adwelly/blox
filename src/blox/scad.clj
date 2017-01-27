@@ -169,7 +169,9 @@
    :vec v
    :content (vec shapes)})
 
-(defn union [a b & shapes]
-  {:operator :union
-   :content (concat [a b] shapes)})
+(defn union
+  ([a] {:operator :union :content (if (seq? a) a [a])})
+  ([a b & shapes]
+    {:operator :union
+     :content (concat [a b] shapes)}))
 

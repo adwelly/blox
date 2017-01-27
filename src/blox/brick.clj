@@ -28,8 +28,8 @@
 
 (defn solid [h m n]
   (let [row (for [i (range m)] (translate [(* i brick-dim) 0 0] (stud1 h)))
-        cols (for [j (range n)] {:operator :translate :vec [0 (* j brick-dim) 0] :content row})]
-    (translate [(+ half-brick-dim (* -1 half-brick-dim m)) (+ half-brick-dim (* -1 half-brick-dim n)) 0] {:operator :union :content cols})))
+        cols (for [j (range n)] (translate [0 (* j brick-dim) 0] (union row)))]
+    (translate [(+ half-brick-dim (* -1 half-brick-dim m)) (+ half-brick-dim (* -1 half-brick-dim n)) 0] (union cols))))
 
 
 (defn buttress [studs]
@@ -44,7 +44,7 @@
         half-total-length (* n half-brick-dim)
         buttresses (for [i (range (dec m))] (translate [(- (* (inc i) brick-dim) half-total-width) 0 (- half-brick-height half-buttress-height iota)] (buttress n)))
         tubes (for [i (range (dec m)) j (range (dec n))] (translate[(- (* (inc i) brick-dim) half-total-width) (- (* (inc j) brick-dim) half-total-length) 0] (tube)))]
-    (apply union (concat buttresses tubes))))
+    (union (concat buttresses tubes))))
 
 (defn plate [m n]
   (solid tile-height m n))
