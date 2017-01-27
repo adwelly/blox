@@ -1,6 +1,8 @@
 # blox
 
-A Clojure library designed to create 3d models. 
+A Clojure library designed to create parametric 3d models. 
+
+It's inspired by https://github.com/farrellm/scad-clj but the emphasis is on composable functions rather than macros. 
 
 ## Usage
 
