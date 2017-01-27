@@ -1,5 +1,5 @@
 (ns blox.brick
-  (:require [blox.scad :refer [write cube difference translate union]]))
+  (:require [blox.scad :refer [write cube cylinder difference translate union]]))
 
 (def iota 0.2)
 (def brick-dim 7.8)
@@ -21,13 +21,13 @@
   {:operator :color
    :vec      [1 0 0]
    :content  [(union (cube l w h)
-                     (translate [0 0 half-stud-height] {:primitive :cylinder :h (+ h stud-h) :r stud-r}))]})
+                     (translate [0 0 half-stud-height] (cylinder (+ h stud-h) stud-r)))]})
 
 (defn stud1 [h]
   (studded-cube brick-dim brick-dim h stud-height stud-radius))
 
 (defn solid [h m n]
-  (let [row (for [i (range m)] {:operator :translate :vec [(* i brick-dim) 0 0] :content [(stud1 h)]})
+  (let [row (for [i (range m)] (translate [(* i brick-dim) 0 0] (stud1 h)))
         cols (for [j (range n)] {:operator :translate :vec [0 (* j brick-dim) 0] :content row})]
     (translate [(+ half-brick-dim (* -1 half-brick-dim m)) (+ half-brick-dim (* -1 half-brick-dim n)) 0] {:operator :union :content cols})))
 
@@ -36,8 +36,8 @@
   (cube buttress-width (- (* studs brick-dim) iota) buttress-height))
 
 (defn tube []
-  (difference {:primitive :cylinder :h tube-height :r tube-radius}
-              {:primitive :cylinder :h (+ tube-height iota) :r (- tube-radius buttress-width)}))
+  (difference (cylinder tube-height tube-radius)
+              (cylinder (+ tube-height iota) (- tube-radius buttress-width))))
 
 (defn interior [m n]
   (let [half-total-width (* m half-brick-dim)

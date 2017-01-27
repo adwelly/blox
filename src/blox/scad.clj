@@ -155,6 +155,11 @@
   {:primitive :cube
    :size [x y z]})
 
+(defn cylinder [h r]
+  {:primitive :cylinder
+   :h h
+   :r r})
+
 (defn difference [a b & shapes]
   {:operator :difference
    :content (concat [a b] shapes)})

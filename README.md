@@ -4,7 +4,7 @@ A Clojure library designed to create 3d models from clojure
 
 ## Usage
 
-Execute the example functions at the end of core.clj, the resulting files in the out sub directory can be viwed with the OpenScad software.
+Execute the example functions at the end of core.clj, the resulting files in the out sub directory can be viewed with the OpenScad software.
 
 ## License
 
