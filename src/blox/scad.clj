@@ -118,60 +118,65 @@
                                                 {:operator :rotate :vec [0, 90, 0] :content [{:primitive :cylinder :r 10 :h 50}]}
                                                 {:operator :rotate :vec [0, 0, 90] :content [{:primitive :cylinder :r 10 :h 50}]}]}))
 
-  ; Smooth polyhedron with a circular profile in x, y, z
-  (defn ex3 [] (write "out/t3.scad"
-                      {:operator :intersection
-                       :content  [{:operator :rotate
-                                   :vec      [90, 0, 0] :content [{:primitive :cylinder
-                                                                   :r         10
-                                                                   :h         50}]}
-                                  {:operator :rotate
-                                   :vec      [0, 90, 0]
-                                   :content  [{:primitive :cylinder :r 10 :h 50}]}
-                                  {:operator :rotate
-                                   :vec      [0, 0, 90]
-                                   :content  [{:primitive :cylinder :r 10 :h 50}]}]}))
+; Smooth polyhedron with a circular profile in x, y, z
+(defn ex3 [] (write "out/t3.scad"
+                    {:operator :intersection
+                     :content  [{:operator :rotate
+                                 :vec      [90, 0, 0] :content [{:primitive :cylinder
+                                                                 :r         10
+                                                                 :h         50}]}
+                                {:operator :rotate
+                                 :vec      [0, 90, 0]
+                                 :content  [{:primitive :cylinder :r 10 :h 50}]}
+                                {:operator :rotate
+                                 :vec      [0, 0, 90]
+                                 :content  [{:primitive :cylinder :r 10 :h 50}]}]}))
 
-  ;; Weird spaceship/submarine shape
-  (defn ex4 [] (write "out/t4.scad"
-                      {:operator :hull
-                       :content  [{:operator :scale
-                                   :vec      [3, 1, 1]
-                                   :content  [{:operator :rotate
-                                               :vec      [90, 0, 0]
-                                               :content  [{:primitive :cylinder
-                                                           :r         10
-                                                           :h         50}]}
-                                              {:operator :rotate
-                                               :vec      [0, 90, 0]
-                                               :content  [{:primitive :cylinder :r 10 :h 50}]}
-                                              {:operator :rotate
-                                               :vec      [0, 0, 90]
-                                               :content  [{:primitive :cylinder :r 10 :h 50}]}]}]}))
+;; Weird spaceship/submarine shape
+(defn ex4 [] (write "out/t4.scad"
+                    {:operator :hull
+                     :content  [{:operator :scale
+                                 :vec      [3, 1, 1]
+                                 :content  [{:operator :rotate
+                                             :vec      [90, 0, 0]
+                                             :content  [{:primitive :cylinder
+                                                         :r         10
+                                                         :h         50}]}
+                                            {:operator :rotate
+                                             :vec      [0, 90, 0]
+                                             :content  [{:primitive :cylinder :r 10 :h 50}]}
+                                            {:operator :rotate
+                                             :vec      [0, 0, 90]
+                                             :content  [{:primitive :cylinder :r 10 :h 50}]}]}]}))
 
 ;; Convenience functions
 
+(defn color  [v shape]
+  {:operator :color
+   :vec v
+   :content  [shape]})
+
 (defn cube [x y z]
   {:primitive :cube
-   :size [x y z]})
+   :size      [x y z]})
 
 (defn cylinder [h r]
   {:primitive :cylinder
-   :h h
-   :r r})
+   :h         h
+   :r         r})
 
 (defn difference [a b & shapes]
   {:operator :difference
-   :content (concat [a b] shapes)})
+   :content  (concat [a b] shapes)})
 
 (defn translate [v & shapes]
-  {:operator :translate
-   :vec v
-   :content (vec shapes)})
+   {:operator :translate
+    :vec      v
+    :content  (vec shapes)})
 
 (defn union
   ([a] {:operator :union :content (if (seq? a) a [a])})
   ([a b & shapes]
-    {:operator :union
-     :content (concat [a b] shapes)}))
+   {:operator :union
+    :content  (concat [a b] shapes)}))
 

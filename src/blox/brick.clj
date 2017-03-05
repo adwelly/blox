@@ -1,5 +1,5 @@
 (ns blox.brick
-  (:require [blox.scad :refer [write cube cylinder difference translate union]]))
+  (:require [blox.scad :refer [write color cube cylinder difference translate union]]))
 
 (def iota 0.2)
 (def brick-dim 7.8)
@@ -18,10 +18,9 @@
 (def tube-radius 3.25)
 
 (defn studded-cube [l w h stud-h stud-r]
-  {:operator :color
-   :vec      [1 0 0]
-   :content  [(union (cube l w h)
-                     (translate [0 0 half-stud-height] (cylinder (+ h stud-h) stud-r)))]})
+  (color [1 0 0] (union
+                   (cube l w h)
+                   (translate [0 0 half-stud-height] (cylinder (+ h stud-h) stud-r)))))
 
 (defn stud1 [h]
   (studded-cube brick-dim brick-dim h stud-height stud-radius))
@@ -55,4 +54,4 @@
                      (translate [0 0 (* -1 wall-depth)] (cube (- (* m brick-dim) wall-depth) (- (* n brick-dim) wall-depth) brick-height)))))
 
 (defn make []
-  (write "out/stud1" (brick 3 4)))
+  (write "out/stud1" (brick 2 2)))
